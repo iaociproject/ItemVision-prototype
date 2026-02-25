@@ -2,6 +2,7 @@
 <button type="button" onclick="init()">Start</button>
 <div id="webcam-container"></div>
 <div id="label-container"></div>
+<div id="info-producto"></div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <script type="text/javascript">
@@ -48,12 +49,44 @@
 
     // run the webcam image through the image model
     async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
+    const prediction = await model.predict(webcam.canvas);
+
+    let highest = prediction.reduce((prev, current) =>
+        (prev.probability > current.probability) ? prev : current
+    );
+
+    labelContainer.innerHTML = 
+        "Producto detectado: " + highest.className + 
+        " (" + highest.probability.toFixed(2) + ")";
+
+    mostrarInformacion(highest.className);
+}
+    function mostrarInformacion(producto) {
+    let info = "";
+
+    if(producto === "Tuny Agua 270g") {
+        info = `
+        <h2>Atún en Agua Tuny 270g</h2>
+        <p>HS: 1604.14</p>
+        <p>Sector: Industria alimentaria</p>
+        <p>Regulación: COFEPRIS</p>
+        <p>Transporte sugerido: Marítimo</p>
+        <p>Tratado aplicable: TMEC</p>
+        `;
+    }
+
+    if(producto === "Great value Tomate M. Condimentado 210g") {
+        info = `
+        <h2>Tomates Molidos Great Value 210g</h2>
+        <p>HS: 2002.90</p>
+        <p>Sector: Agroalimentario</p>
+        <p>Regulación: COFEPRIS</p>
+        <p>Transporte sugerido: Marítimo</p>
+        <p>Tratado aplicable: TMEC</p>
+        `;
+    }
+
+    document.getElementById("info-producto").innerHTML = info;
+}
     }
 </script>
