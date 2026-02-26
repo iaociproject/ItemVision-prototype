@@ -1,92 +1,328 @@
-<div>Teachable Machine Image Model</div>
-<button type="button" onclick="init()">Start</button>
-<div id="webcam-container"></div>
-<div id="label-container"></div>
-<div id="info-producto"></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-<script type="text/javascript">
-    // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-    // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/zuUbAzcBX/";
-
-    let model, webcam, labelContainer, maxPredictions;
-
-    // Load the image model and setup the webcam
-    async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
-
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
-    }
-
-    async function loop() {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    // run the webcam image through the image model
-    async function predict() {
-    const prediction = await model.predict(webcam.canvas);
-
-    let highest = prediction.reduce((prev, current) =>
-        (prev.probability > current.probability) ? prev : current
-    );
-
-    labelContainer.innerHTML = 
-        "Producto detectado: " + highest.className + 
-        " (" + highest.probability.toFixed(2) + ")";
-
-    mostrarInformacion(highest.className);
-    }
-    function mostrarInformacion(producto) {
-    let info = "";
-
-    if(producto === "Tuny Agua 270g") {
-        info = `
-        <h2>Atún en Agua Tuny 270g</h2>
-        <p>HS: 1604.14</p>
-        <p>Sector: Industria alimentaria</p>
-        <p>Regulación: COFEPRIS</p>
-        <p>Transporte sugerido: Marítimo</p>
-        <p>Tratado aplicable: TMEC</p>
-        `;
-    }
-
-    if(producto === "Great value Tomate M. Condimentado 210g") {
-        info = `
-        <h2>Tomates Molidos Great Value 210g</h2>
-        <p>HS: 2002.90</p>
-        <p>Sector: Agroalimentario</p>
-        <p>Regulación: COFEPRIS</p>
-        <p>Transporte sugerido: Marítimo</p>
-        <p>Tratado aplicable: TMEC</p>
-        `;
-    }
-
-    document.getElementById("info-producto").innerHTML = info;
-}
-
-</script>
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <title>Crafto - The Multipurpose HTML5 Template</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="ThemeZaa">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="description" content="Elevate your online presence with Crafto - a modern, versatile, multipurpose Bootstrap 5 responsive HTML5, SCSS template using highly creative 52+ ready demos.">
+        <!-- favicon icon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="css/vendors.min.css"/>
+        <link rel="stylesheet" href="css/icon.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/responsive.css"/>
+        <link rel="stylesheet" href="demos/scattered-portfolio/scattered-portfolio.css" /> 
+    </head>
+    <body data-mobile-nav-style="full-screen-menu" data-mobile-nav-bg-color="#232323" class="background-position-center-top custom-cursor" style="background-image: url(images/vertical-line-bg-small-medium-gray.svg)"> 
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+        <!-- start cursor -->
+        <div class="cursor-page-inner">
+            <div class="circle-cursor circle-cursor-inner"></div>
+            <div class="circle-cursor circle-cursor-outer"></div>
+        </div>
+        <!-- end cursor -->
+        <!-- start header -->
+        <header> 
+            <!-- start navigation -->
+            <nav class="navbar navbar-expand-lg header-light bg-transparent disable-fixed">
+                <div class="container-fluid">
+                    <div class="col-auto col-lg-2 me-lg-0 me-auto">
+                        <a class="navbar-brand" href="demo-scattered-portfolio.html">
+                            <img src="images/demo-scattered-portfolio-logo-black.png" data-at2x="images/demo-scattered-portfolio-logo-black@2x.png" alt="" class="default-logo">
+                            <img src="images/demo-scattered-portfolio-logo-black.png" data-at2x="images/demo-scattered-portfolio-logo-black@2x.png" alt="" class="alt-logo">
+                            <img src="images/demo-scattered-portfolio-logo-black.png" data-at2x="images/demo-scattered-portfolio-logo-black@2x.png" alt="" class="mobile-logo"> 
+                        </a>
+                    </div>
+                    <div class="col-auto menu-order position-static">
+                        <button class="navbar-toggler float-start" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarNav"> 
+                            <ul class="navbar-nav"> 
+                                <li class="nav-item"><a href="demo-scattered-portfolio.html" class="nav-link">home</a></li>
+                                <li class="nav-item"><a href="demo-scattered-portfolio-about.html" class="nav-link">about</a></li>
+                                <li class="nav-item"><a href="demo-scattered-portfolio-expertise.html" class="nav-link">expertise</a></li>
+                                <li class="nav-item"><a href="demo-scattered-portfolio-work.html" class="nav-link">work</a></li>
+                                <li class="nav-item"><a href="demo-scattered-portfolio-contact.html" class="nav-link">contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- end navigation -->
+        </header>
+        <!-- end header --> 
+        <!-- start page title -->
+        <section class="ipad-top-space-margin page-title-big-typography position-relative md-p-0 overflow-hidden">
+            <div id="particles-style-01" class="position-absolute h-100 top-0 left-0 w-100" data-particle="true" data-particle-options='{"particles":{"number":{"value":5,"density":{"enable":true,"value_area":800}},"color":{"value":"#000000"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":1,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":4,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":false,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":6,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true}'></div>
+            <div class="container">
+                <div class="row align-items-lg-end align-items-center small-screen md-h-auto text-sm-start text-center">
+                    <div class="col-12 position-relative page-title-extra-large md-mb-70px sm-mb-50px xs-mb-20px"> 
+                        <div class="fw-800 text-black fs-160 md-fs-130 sm-fs-110 xs-fs-70 ls-minus-4px md-ls-minus-2px text-uppercase">
+                            <div data-bottom-top="transform: translate3d(-50px, 0px, 0px);" data-top-bottom="transform: translate3d(50px, 0px, 0px);">About</div> 
+                            <div class="ms-10 xs-ms-0" data-bottom-top="transform: translate3d(50px, 0px, 0px);" data-top-bottom="transform: translate3d(-50px, 0px, 0px);">agency</div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> 
+        <!-- start page title -->
+        <!-- start section -->
+        <section class="p-0">
+            <div class="container">
+                <div class="row align-items-end text-center text-sm-start" data-anime='{ "el": "childs", "translateX": [-15, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>
+                    <div class="col-xl-4 col-lg-5 offset-xl-1 md-mb-15px">
+                        <div class="fs-19 fw-600 text-black">Create impactful experience story.</div>
+                        <span class="w-70 xl-w-100 sm-w-70 xs-w-80 d-block xs-mx-auto">We are excited for our work and how it positively impacts clients.</span>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="fs-80 sm-fs-50 text-black fw-200">- <span class="fs-130 lg-fs-110 xs-fs-75 ls-minus-4px md-ls-minus-2px font-style-italic alt-font fw-500">experience</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- end section -->
+        <!-- start section -->
+        <section class="position-relative overflow-hidden">
+            <div class="one-third-screen md-h-600px sm-h-350px skrollr-parallax magic-cursor round-cursor mx-auto" data-bottom-top="width: 54%" data-center-top="width: 86%;" data-parallax-background-ratio="0.5">
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
+                <div id="info-producto"></div>
+            </div>
+            <button type="button" onclick="init()" class="col btn btn-warning start-button">Start</button>
+        </section>
+        <!-- end section -->
+         
+        <!-- start section -->
+        <section class="overflow-hidden big-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 position-relative">
+                        <div class="outside-box-right-25 xs-outside-box-right-0">
+                            <div class="swiper dark swiper-width-auto" data-slider-options='{ "slidesPerView": "auto", "spaceBetween": 30, "loop": true, "autoplay": { "delay": 2000, "disableOnInteraction": false }, "pagination": { "el": ".slider-four-slide-pagination-1", "clickable": true }, "navigation": { "nextEl": ".slider-one-slide-next-1", "prevEl": ".slider-one-slide-prev-1" }, "keyboard": { "enabled": true, "onlyInViewport": true }, "breakpoints": { "1200": { "spaceBetween": 80 }, "992": {"spaceBetween": 50 } }, "effect": "slide" }'>
+                                <div class="swiper-wrapper">
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide"> 
+                                        <img src="https://placehold.co/430x510" class="md-h-400px sm-h-250px" alt="" /> 
+                                    </div>
+                                    <!-- end content carousal item -->
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide mt-60px sm-mt-0">
+                                        <img src="https://placehold.co/635x540" class="md-h-400px sm-h-250px" alt="" />
+                                    </div>
+                                    <!-- end content carousal item -->
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide">
+                                        <img src="https://placehold.co/430x510" class="md-h-400px sm-h-250px" alt="" />
+                                    </div>
+                                    <!-- end content carousal item -->
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide mt-60px sm-mt-0">
+                                        <img src="https://placehold.co/635x540" class="md-h-400px sm-h-250px" alt="" />
+                                    </div>
+                                    <!-- end content carousal item --> 
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide"> 
+                                        <img src="https://placehold.co/430x510" class="md-h-400px sm-h-250px" alt="" /> 
+                                    </div>
+                                    <!-- end content carousal item -->
+                                    <!-- start content carousal item --> 
+                                    <div class="swiper-slide mt-60px sm-mt-0">
+                                        <img src="https://placehold.co/635x540" class="md-h-400px sm-h-250px" alt="" />
+                                    </div>
+                                    <!-- end content carousal item -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- start slider pagination -->
+                        <!--<div class="swiper-pagination slider-four-slide-pagination-1 swiper-pagination-style-2 swiper-pagination-clickable swiper-pagination-bullets"></div>-->
+                        <!-- end slider pagination --> 
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- end section -->
+        <!-- start section --> 
+        <section class="overflow-hidden big-section py-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-4 lg-mb-45px xs-mb-30px text-sm-start text-center" data-anime='{ "translateY": [0, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
+                        <span class="fs-70 xs-fs-50 fw-700 text-dark-gray mb-0 ls-minus-2px">Hear from <span class="alt-font font-style-italic">clients.</span></span>
+                    </div>
+                    <div class="col-xl-8" data-anime='{ "translateY": [0, 0], "opacity": [0,1], "duration": 600, "delay":0, "staggervalue": 300, "easing": "easeOutQuad" }'>
+                        <div class="outside-box-right-40 sm-outside-box-right-0">
+                            <div class="swiper magic-cursor" data-slider-options='{ "slidesPerView": 1, "spaceBetween": 60, "loop": true, "parallax": true, "speed": 1200, "pagination": { "el": ".slider-one-slide-pagination", "clickable": true, "dynamicBullets": false }, "navigation": { "nextEl": ".slider-one-slide-next-2", "prevEl": ".slider-one-slide-prev-2" }, "autoplay": { "delay": 5000, "disableOnInteraction": false }, "keyboard": { "enabled": true, "onlyInViewport": true }, "breakpoints": { "992": { "slidesPerView": 4 }, "768": { "slidesPerView": 2 }, "320": { "slidesPerView": 1 } }, "effect": "slide" }'>
+                                <div class="swiper-wrapper testimonials-style-13"> 
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Herman miller</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">From the day one, Themezaa has delivered all possible outcomes as demanded. I must say that all the developers are dedicated.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Shoko mugikura</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">Theme is beautiful, although it takes some time to figure out where to edit what. But support is very quick and helpful theme.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Matthew taylor</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">They are very good with communication, addressing the need and attentively making sure the customer is fully supported.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Leonel mooney</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">What an awesome theme and support team is very kind. Every element is designed pixel perfect, so it is really a modern theme.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Herman miller</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">From the day one, Themezaa has delivered all possible outcomes as demanded. I must say that all the developers are dedicated.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Shoko mugikura</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">Theme is beautiful, although it takes some time to figure out where to edit what. But support is very quick and helpful theme.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Matthew taylor</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">They are very good with communication, addressing the need and attentively making sure the customer is fully supported.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                    <!-- start review item -->
+                                    <div class="swiper-slide text-sm-start text-center last-paragraph-no-margin" data-swiper-parallax="700"> 
+                                        <span class="fs-15 fw-800 text-dark-gray text-uppercase mb-10px d-block ls-1px">@ Leonel mooney</span>
+                                        <p class="fs-22 lh-36 text-dark-gray">What an awesome theme and support team is very kind. Every element is designed pixel perfect, so it is really a modern theme.</p>
+                                    </div>
+                                    <!-- end review item -->
+                                </div>  
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="separator-line-5px w-100 bg-extra-medium-gray mt-45px mb-45px xs-mt-30px xs-mb-30px"></div>
+                            </div>
+                            <div class="col-sm-6 xs-mb-30px">
+                                <div class="d-flex justify-content-center justify-content-sm-start">
+                                    <!-- start slider navigation -->
+                                    <div class="slider-one-slide-prev-2 text-black swiper-button-prev slider-navigation-style-04 bg-base-color h-65px w-65px" tabindex="0" role="button" aria-label="Previous slide"><i class="fa-solid fa-arrow-left"></i></div>
+                                    <div class="slider-one-slide-next-2 text-black swiper-button-next slider-navigation-style-04 bg-base-color h-65px w-65px" tabindex="0" role="button" aria-label="Next slide"><i class="fa-solid fa-arrow-right"></i></div>
+                                    <!-- end slider navigation -->
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center justify-content-center justify-content-sm-end">
+                                    <div class="fw-800 fs-70 text-dark-gray me-15px ls-minus-1px">4.82</div>
+                                    <div class="text-center">
+                                        <div class="bg-black text-white border-radius-30px ps-20px pe-20px fs-13">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                        <span class="text-dark-gray fs-13 fw-700 text-uppercase">Clutch review</span>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- end section -->
+        <!-- start footer -->
+        <footer class="position-relative">
+            <div id="particles-style-02" class="position-absolute h-100 top-0 left-0 w-100 z-index-minus-2" data-particle="true" data-particle-options='{"particles":{"number":{"value":5,"density":{"enable":true,"value_area":800}},"color":{"value":"#000000"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":1,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":4,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":false,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":6,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true}'></div>
+            <div class="container">
+                <div class="row mb-8">
+                    <div class="col-12">
+                        <div class="fs-90 md-fs-70 xs-fs-50 fw-700 text-black lh-100 md-lh-80 xs-lh-60 ls-minus-4px" data-anime='{"translateX": [-50, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>Got a project in mind?</div>
+                        <a href="mailto:info@domain.com" class="alt-font font-style-italic text-black fs-100 md-fs-70 xs-fs-50 fw-700 lh-120 md-lh-95 xs-lh-60 float-end ls-minus-3px" data-anime='{"translateX": [50, 0], "opacity": [0,1], "duration": 800, "delay": 200, "staggervalue": 300, "easing": "easeOutQuad" }'>info@domain.com</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-xl-3 col-sm-6 ms-auto order-1 xs-mb-10px text-center text-sm-start overflow-hidden">
+                        <span class="fs-16 fw-600 text-black fancy-text-style-4 overflow-hidden">
+                            <span data-fancy-text='{ "effect": "rotate", "string": ["Thanks for visiting.", "Customer oriented agency.", "Providing excellent solutions."], "speed": 50 }'></span>
+                        </span>
+                    </div>
+                    <div class="col-xl-6 text-center last-paragraph-no-margin order-3 order-xl-2 lg-mt-10px xs-mt-0"><p class="fs-16">&copy; 2024 Crafto is Proudly Powered by <a href="https://www.themezaa.com/" target="_blank" class="text-black text-black-hover text-decoration-line-bottom fw-700">ThemeZaa</a></p></div>
+                    <div class="col-12 col-xl-3 col-sm-6 text-end order-2 xs-mb-10px text-center text-sm-end">
+                        <div class="elements-social social-text-style-01">
+                            <ul class="small-icon dark fw-700 icon-with-animation">
+                                <li><a class="facebook" href="https://www.facebook.com/" target="_blank">Fb.</a></li>
+                                <li><a class="twitter" href="http://www.twitter.com" target="_blank">Tw.</a></li> 
+                                <li><a class="linkedin" href="http://www.linkedin.com" target="_blank">In.</a></li>  
+                                <li><a class="behance" href="http://www.behance.com/" target="_blank">Be.</a></li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end footer -->
+        <!-- start sticky elements -->
+        <div class="sticky-wrap z-index-1 d-none d-xl-inline-block" data-animation-delay="100" data-shadow-animation="true">
+            <div class="elements-social social-icon-style-10">
+                <ul class="fs-14">
+                    <li class="me-30px"><a class="facebook" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa-brands fa-facebook-f me-10px"></i>
+                            <span class="fw-600">Facebook</span>
+                        </a>
+                    </li> 
+                    <li class="me-30px">
+                        <a class="dribbble" href="http://www.dribbble.com" target="_blank">
+                            <i class="fa-brands fa-dribbble me-10px"></i>
+                            <span class="fw-600">Dribbble</span>
+                        </a> 
+                    </li>
+                    <li class="me-30px">
+                        <a class="twitter" href="http://www.twitter.com" target="_blank">
+                            <i class="fa-brands fa-twitter me-10px"></i>
+                            <span class="fw-600">Twitter</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="instagram" href="http://www.instagram.com" target="_blank">
+                            <i class="fa-brands fa-instagram me-10px"></i>
+                            <span class="fw-600">Instagram</span>
+                        </a> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- end sticky elements -->
+        <!-- start scroll progress -->
+        <div class="scroll-progress d-none d-xxl-block">
+            <a href="#" class="scroll-top" aria-label="scroll">
+                <span class="scroll-text">Scroll</span><span class="scroll-line"><span class="scroll-point"></span></span>
+            </a>
+        </div>
+        <!-- end scroll progress -->
+        <!-- javascript libraries -->
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/vendors.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script> 
+        <script type="text/javascript" src="js/aiModel.js"></script> 
+    </body>
+</html>
