@@ -1,0 +1,149 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <title>ItemVision</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content=" Jesús Alan Aranda Cardona and Diego Esau Olmedo Banda">
+        <meta name="viewport" content="width=device-width,initial-scale=2.0" />
+        <meta name="description" content="We are creating a prototype with artifical intelligence that is capable of recognizing items and providing customs information about them.">
+        <!-- favicon icon -->
+        <link rel="shortcut icon" href="images/web_icon.png">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="css/vendors.min.css"/>
+        <link rel="stylesheet" href="css/icon.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/responsive.css"/>
+        <link rel="stylesheet" href="demos/scattered-portfolio/scattered-portfolio.css" /> 
+    </head>
+    <body data-mobile-nav-style="full-screen-menu" data-mobile-nav-bg-color="#232323" class="background-position-center-top custom-cursor" style="background-image: url(images/vertical-line-bg-small-medium-gray.svg)"> 
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+        <!-- start cursor -->
+        <div class="cursor-page-inner">
+            <div class="circle-cursor circle-cursor-inner"></div>
+            <div class="circle-cursor circle-cursor-outer"></div>
+        </div>
+        <!-- end cursor -->
+        <!-- start header -->
+        <header> 
+            <!-- start navigation -->
+            <nav class="navbar navbar-expand-lg header-light bg-transparent disable-fixed">
+                <div class="container-fluid">
+                    <div class="col-auto col-lg-2 me-lg-0 me-auto">
+                        <a class="navbar-brand" href="index.html">
+                            <img src="images/web_icon.png" data-at2x="images/web_icon@2x.png" alt="" class="default-logo">
+                            <img src="images/web_icon.png" data-at2x="images/web_icon@2x.png" alt="" class="alt-logo">
+                            <img src="images/web_icon.png" data-at2x="images/web_icon@2x.png" alt="" class="mobile-logo">
+                            <span class="navbar-text">ItemVision</span>
+                        </a>
+                    </div>
+                    <div class="col-auto menu-order position-static">
+                        <button class="navbar-toggler float-start" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                            <span class="navbar-toggler-line"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarNav"> 
+                            <ul class="navbar-nav"> 
+                                <li class="nav-item"><a href="index.html" class="nav-link">home</a></li>
+                                <li class="nav-item"><a href="" class="nav-link">about</a></li>
+                                <li class="nav-item"><a href="" class="nav-link">expertise</a></li>
+                                <li class="nav-item"><a href="" class="nav-link">work</a></li>
+                                <li class="nav-item"><a href="" class="nav-link">contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- end navigation -->
+        </header>
+        <!-- end header --> 
+
+        <!-- start section -->
+        <section class="position-relative overflow-hidden">
+            <div class="one-third-screen md-h-600px sm-h-350px skrollr-parallax magic-cursor round-cursor mx-auto" data-bottom-top="width: 54%" data-center-top="width: 86%;" data-parallax-background-ratio="0.5">
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
+                <div id="info-producto"></div>
+            </div>
+            <button type="button" onclick="init()" class="col btn btn-warning start-button">Start</button>
+        </section>
+        <!-- end section -->
+        <!-- start footer -->
+        <footer class="position-relative">
+            <div id="particles-style-02" class="position-absolute h-100 top-0 left-0 w-100 z-index-minus-2" data-particle="true" data-particle-options='{"particles":{"number":{"value":5,"density":{"enable":true,"value_area":800}},"color":{"value":"#000000"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":1,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":4,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":false,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":6,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true}'></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-xl-3 col-sm-6 ms-auto order-1 xs-mb-10px text-center text-sm-start overflow-hidden">
+                        <span class="fs-16 fw-600 text-black fancy-text-style-4 overflow-hidden">
+                            <span data-fancy-text='{ "effect": "rotate", "string": ["Thanks for visiting.", "Customer oriented agency.", "Providing excellent solutions."], "speed": 50 }'></span>
+                        </span>
+                    </div>
+                    <div class="col-xl-6 text-center last-paragraph-no-margin order-3 order-xl-2 lg-mt-10px xs-mt-0"><p class="fs-16">&copy; 2026 ItemVision is Proudly Powered by <span target="_blank" class="text-black text-black-hover text-decoration-line-bottom fw-700">Diego Olmedo & Alan Aranda</span></p></div>
+                    <div class="col-12 col-xl-3 col-sm-6 text-end order-2 xs-mb-10px text-center text-sm-end">
+                        <div class="elements-social social-text-style-01">
+                            <ul class="small-icon dark fw-700 icon-with-animation">
+                                <li><a class="facebook" href="https://www.facebook.com/" target="_blank">Fb.</a></li>
+                                <li><a class="twitter" href="http://www.twitter.com" target="_blank">Tw.</a></li> 
+                                <li><a class="linkedin" href="http://www.linkedin.com" target="_blank">In.</a></li>  
+                                <li><a class="behance" href="http://www.behance.com/" target="_blank">Be.</a></li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end footer -->
+        <!-- start sticky elements -->
+        <div class="sticky-wrap z-index-1 d-none d-xl-inline-block" data-animation-delay="100" data-shadow-animation="true">
+            <div class="elements-social social-icon-style-10">
+                <ul class="fs-14">
+                    <li class="me-30px"><a class="facebook" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa-brands fa-facebook-f me-10px"></i>
+                            <span class="fw-600">Facebook</span>
+                        </a>
+                    </li> 
+                    <li class="me-30px">
+                        <a class="dribbble" href="http://www.dribbble.com" target="_blank">
+                            <i class="fa-brands fa-dribbble me-10px"></i>
+                            <span class="fw-600">Dribbble</span>
+                        </a> 
+                    </li>
+                    <li class="me-30px">
+                        <a class="twitter" href="http://www.twitter.com" target="_blank">
+                            <i class="fa-brands fa-twitter me-10px"></i>
+                            <span class="fw-600">Twitter</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="instagram" href="http://www.instagram.com" target="_blank">
+                            <i class="fa-brands fa-instagram me-10px"></i>
+                            <span class="fw-600">Instagram</span>
+                        </a> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- end sticky elements -->
+        <!-- start scroll progress -->
+        <div class="scroll-progress d-none d-xxl-block">
+            <a href="#" class="scroll-top" aria-label="scroll">
+                <span class="scroll-text">Scroll</span><span class="scroll-line"><span class="scroll-point"></span></span>
+            </a>
+        </div>
+        <!-- end scroll progress -->
+        <!-- javascript libraries -->
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/vendors.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script> 
+        <script type="text/javascript" src="js/aiModel.js"></script> 
+    </body>
+</html>

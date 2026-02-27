@@ -19327,20 +19327,50 @@ footer .footer-navbar .nav-item:last-child a {
 .footer-demo img {
   max-height: 55px !important;
 }
-
 .start-button {
-    display: block;
-    margin: 20px auto;
-    border-radius: 50px;
-    padding: 10px 30px; 
-    font-size: 16px; 
-    background-color: #FFE900; 
-    border: none; 
-    color: #000; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease; 
+  display: block;
+  margin: 20px auto;
+  border-radius: 50px;
+  padding: 10px 30px; 
+  font-size: 16px; 
+  background-color: #FFE900; 
+  border: none; 
+  color: #000; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
 }
-
 .start-button:hover {
-    background-color: #DBC902; 
+  background-color: #DBC902; 
+}
+#webcam-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+  width: 320px;
+  height: 320px;
+  border: 4px solid #FFE900;
+  border-radius: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+#webcam-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  border-radius: 16px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center; 
+}
+.navbar-brand img {
+  margin-right: 2px;
+}
+.navbar-text {
+  margin-top: 10px;
+  font-size: 22px; 
+  font-weight: 600; 
+  color: #000; 
 }
