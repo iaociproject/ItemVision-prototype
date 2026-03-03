@@ -1,2 +1,2 @@
-# Barcode-reader-prototype
-We are creating a prototype with artifical intelligence that is capable of recognizing barcodes and providing customs information about them.
+# ItemVision-prototype
+We are creating a prototype with artificial intelligence that is able to recognize products through images and display information about the product.
